@@ -4,7 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "PlayerCarPawn.generated.h"
+
+class UCameraComponent;
+class USpringArmComponent;
 
 UCLASS()
 class TOWNDELIVERYGAME_API APlayerCarPawn : public APawn
@@ -20,10 +25,23 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	UPROPERTY(EditAnywhere)
+		UCameraComponent* Camera;
+	UPROPERTY(EditAnywhere)
+		USpringArmComponent* CameraSpringArm;
+
+	UPROPERTY(EditAnywhere)
+		float Acceleration = 10.0f;
+	UPROPERTY(EditAnywhere)
+		float MaxSpeed = 120.0f;
+	UPROPERTY(EditAnywhere)
+		float TurningRadius = 45.0f;
+	UPROPERTY(EditAnywhere)
+		float Mass = 20.0f;
+
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* CarMesh;
+
 
 };
