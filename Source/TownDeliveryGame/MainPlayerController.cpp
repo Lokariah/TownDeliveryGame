@@ -3,18 +3,21 @@
 
 #include "MainPlayerController.h"
 #include "Components/InputComponent.h"
+#include "ChaosWheeledVehicleMovementComponent.h"
 
 void AMainPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	PrimaryActorTick.bCanEverTick = true;
-	PlayerCar = Cast<APlayerCarPawn>(GetPawn());
+	PlayerCar = Cast<ACarChaosVehiclePawn>(GetPawn());
 }
 
 void AMainPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (PlayerCar) {
+	UpdateInAirControl(DeltaTime);
+
+	/*if (PlayerCar) {
 		if (bThrottleReceived) {
 			bThrottleReceived = false;
 		}
@@ -22,7 +25,7 @@ void AMainPlayerController::Tick(float DeltaTime)
 			CarMomentum -= DeltaTime * PlayerCar->Mass;
 		}
 		PlayerCar->SetActorLocation(PlayerCar->GetActorLocation() + PlayerCar->GetActorForwardVector() * DeltaTime);
-	}
+	}*/
 }
 
 void AMainPlayerController::SetupInputComponent()
@@ -31,22 +34,85 @@ void AMainPlayerController::SetupInputComponent()
 	check(InputComponent);
 	InputComponent->BindAxis("Throttle", this, &AMainPlayerController::Throttle);
 	InputComponent->BindAxis("Turn", this, &AMainPlayerController::TurnCar);
+	InputComponent->BindAxis("LookRight", this, &AMainPlayerController::LookRight);
+	InputComponent->BindAxis("LookUp", this, &AMainPlayerController::LookUp);
 	InputComponent->BindAction("Interact", IE_Pressed, this, &AMainPlayerController::Interact);
+	InputComponent->BindAction("Handbrake", IE_Pressed, this, &AMainPlayerController::OnHandbrakePressed);
+	InputComponent->BindAction("Handbrake", IE_Released, this, &AMainPlayerController::OnHandbrakeReleased);
 }
 
 void AMainPlayerController::Throttle(float Value)
 {
 	if (PlayerCar) {
-		bThrottleReceived = true;
-		CarMomentum += Value * PlayerCar->Acceleration;
+			PlayerCar->GetVehicleMovementComponent()->SetThrottleInput(Value);
+			if(0 - Value >= 0) PlayerCar->GetVehicleMovementComponent()->SetBrakeInput(0 - Value);
 	}
+	UE_LOG(LogTemp, Warning, TEXT("Throttle"));
 }
 
 void AMainPlayerController::TurnCar(float Value)
 {
-	if(PlayerCar) PlayerCar->AddActorLocalRotation(FRotator(0.0f, Value * PlayerCar->TurningRadius, 0.0f));
+	if (PlayerCar) PlayerCar->GetVehicleMovementComponent()->SetSteeringInput(Value);
+	UE_LOG(LogTemp, Warning, TEXT("TurnCar"));
+}
+
+void AMainPlayerController::LookUp(float Value)
+{
+	if (Value != 0.0f && PlayerCar) {
+		PlayerCar->AddControllerPitchInput(Value);
+		UE_LOG(LogTemp, Warning, TEXT("LookUp"));
+	}
+}
+
+void AMainPlayerController::LookRight(float Value)
+{
+	if (Value != 0.0f && PlayerCar) {
+		PlayerCar->AddControllerYawInput(Value);
+		UE_LOG(LogTemp, Warning, TEXT("LookRight"));
+	}
+}
+
+void AMainPlayerController::OnHandbrakePressed()
+{
+	if (PlayerCar) PlayerCar->GetVehicleMovementComponent()->SetHandbrakeInput(true);
+	UE_LOG(LogTemp, Warning, TEXT("OnHandbrakePressed"));
+}
+
+void AMainPlayerController::OnHandbrakeReleased()
+{
+	if (PlayerCar) PlayerCar->GetVehicleMovementComponent()->SetHandbrakeInput(false);
+	UE_LOG(LogTemp, Warning, TEXT("OnHandbrakeReleased"));
 }
 
 void AMainPlayerController::Interact()
 {
+}
+
+void AMainPlayerController::UpdateInAirControl(float DeltaTime)
+{
+	if (PlayerCar) {
+		FCollisionQueryParams queryParams;
+		queryParams.AddIgnoredActor(PlayerCar);
+		const FVector traceStart = PlayerCar->GetActorLocation() + FVector(0.0f, 0.0f, 50.0f);
+		const FVector traceEnd = PlayerCar->GetActorLocation() - FVector(0.0f, 0.0f, 200.0f);
+
+		FHitResult Hit;
+
+		const bool bInAir = !PlayerCar->GetWorld()->LineTraceSingleByChannel(Hit, traceStart, traceEnd, ECC_Visibility, queryParams);
+		const bool bNotGrounded = FVector::DotProduct(PlayerCar->GetActorUpVector(), FVector::UpVector) < 0.1f;
+
+		if (bInAir || bNotGrounded) {
+			const float forwardInput = InputComponent->GetAxisValue("Throttle");
+			const float rightInput = InputComponent->GetAxisValue("Turn");
+			const float airMovementForcePitch = 3.0f;
+			const float airMovementForceRoll = !bInAir && bNotGrounded ? 20.0f : 3.0f;
+
+			if (UPrimitiveComponent* vehicleMesh = PlayerCar->GetVehicleMovementComponent()->UpdatedPrimitive) {
+				const FVector movementVector = FVector(-rightInput * airMovementForceRoll, forwardInput * airMovementForcePitch, 0.1f) * DeltaTime * 20.0f;
+				const FVector newAngularMovement = PlayerCar->GetActorRotation().RotateVector(movementVector);
+
+				vehicleMesh->SetPhysicsAngularVelocityInDegrees(newAngularMovement, true);
+			}
+		}
+	}
 }

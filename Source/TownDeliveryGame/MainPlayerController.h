@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PlayerCarPawn.h"
+#include "CarChaosVehiclePawn.h"
 #include "GameFramework/PlayerController.h"
 #include "MainPlayerController.generated.h"
 
@@ -23,12 +23,19 @@ public:
 	virtual void SetupInputComponent();
 
 	UPROPERTY(EditAnywhere)
-		APlayerCarPawn* PlayerCar;
+		ACarChaosVehiclePawn* PlayerCar;
 
 private:
+
 	void Throttle(float Value);
 	void TurnCar(float Value);
+	void LookUp(float Value);
+	void LookRight(float Value);
+	void OnHandbrakePressed();
+	void OnHandbrakeReleased();
 	void Interact();
+
+	void UpdateInAirControl(float DeltaTime);
 
 	UPROPERTY()
 		float CarMomentum;
