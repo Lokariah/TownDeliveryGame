@@ -47,20 +47,17 @@ void AMainPlayerController::Throttle(float Value)
 			PlayerCar->GetVehicleMovementComponent()->SetThrottleInput(Value);
 			if(0 - Value >= 0) PlayerCar->GetVehicleMovementComponent()->SetBrakeInput(0 - Value);
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Throttle"));
 }
 
 void AMainPlayerController::TurnCar(float Value)
 {
 	if (PlayerCar) PlayerCar->GetVehicleMovementComponent()->SetSteeringInput(Value);
-	UE_LOG(LogTemp, Warning, TEXT("TurnCar"));
 }
 
 void AMainPlayerController::LookUp(float Value)
 {
 	if (Value != 0.0f && PlayerCar) {
 		PlayerCar->AddControllerPitchInput(Value);
-		UE_LOG(LogTemp, Warning, TEXT("LookUp"));
 	}
 }
 
@@ -68,20 +65,17 @@ void AMainPlayerController::LookRight(float Value)
 {
 	if (Value != 0.0f && PlayerCar) {
 		PlayerCar->AddControllerYawInput(Value);
-		UE_LOG(LogTemp, Warning, TEXT("LookRight"));
 	}
 }
 
 void AMainPlayerController::OnHandbrakePressed()
 {
 	if (PlayerCar) PlayerCar->GetVehicleMovementComponent()->SetHandbrakeInput(true);
-	UE_LOG(LogTemp, Warning, TEXT("OnHandbrakePressed"));
 }
 
 void AMainPlayerController::OnHandbrakeReleased()
 {
 	if (PlayerCar) PlayerCar->GetVehicleMovementComponent()->SetHandbrakeInput(false);
-	UE_LOG(LogTemp, Warning, TEXT("OnHandbrakeReleased"));
 }
 
 void AMainPlayerController::Interact()

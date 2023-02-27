@@ -30,7 +30,7 @@ void AHouseActor::BeginPlay()
 void AHouseActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	GameModeRef->Tick(DeltaTime);
 }
 
 void AHouseActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& sweepResult)

@@ -33,6 +33,16 @@ void ATaxiBayActor::Tick(float DeltaTime)
 
 }
 
+void ATaxiBayActor::SetIsTarget(bool bTarget)
+{
+	IsTarget = bTarget;
+}
+
+bool ATaxiBayActor::GetIsTarget()
+{
+	return IsTarget;
+}
+
 void ATaxiBayActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& sweepResult)
 {
 	GameModeRef->ParkingSphereOverlap(true, -1);

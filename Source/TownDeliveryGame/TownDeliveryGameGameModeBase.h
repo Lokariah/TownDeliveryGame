@@ -20,10 +20,10 @@ class TOWNDELIVERYGAME_API ATownDeliveryGameGameModeBase : public AGameModeBase
 public:
 	UFUNCTION()
 		void ParkingSphereOverlap(bool bStart, int houseNo);
-
+	void Tick(float DeltaSeconds);
 protected:
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaSeconds) override;
+	//virtual void Tick(float DeltaSeconds) override;
 
 private:
 	void GenerateDestination();
@@ -54,6 +54,9 @@ private:
 
 	UPROPERTY()
 		TArray<AHouseActor*> Houses;
+
+	UPROPERTY()
+		ATaxiBayActor* TaxiBay;
 
 	UPROPERTY(EditAnywhere)
 		FName MainMenuLevel;

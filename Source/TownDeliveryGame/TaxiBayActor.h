@@ -24,6 +24,11 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void SetIsTarget(bool bTarget);
+	UFUNCTION(BlueprintPure)
+		bool GetIsTarget();
+
 	UFUNCTION()
 		void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& sweepResult);
 
@@ -35,6 +40,9 @@ private:
 		UStaticMeshComponent* TaxiStationMesh;
 	UPROPERTY(EditAnywhere)
 		UBoxComponent* ParkingCollisionBox;
+
+	UPROPERTY()
+		bool IsTarget = false;
 
 	UPROPERTY()
 		ATownDeliveryGameGameModeBase* GameModeRef;
