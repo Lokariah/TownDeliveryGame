@@ -108,7 +108,7 @@ void AMainPlayerController::UpdateInAirControl(float DeltaTime)
 			const float airMovementForceRoll = !bInAir && bNotGrounded ? 20.0f : 3.0f;
 
 			if (UPrimitiveComponent* vehicleMesh = PlayerCar->GetVehicleMovementComponent()->UpdatedPrimitive) {
-				const FVector movementVector = FVector(-rightInput * airMovementForceRoll, forwardInput * airMovementForcePitch, 0.1f) * DeltaTime * 20.0f;
+				const FVector movementVector = FVector(-rightInput * airMovementForceRoll, forwardInput * airMovementForcePitch, 0.1f) * DeltaTime * 25.0f;
 				const FVector newAngularMovement = PlayerCar->GetActorRotation().RotateVector(movementVector);
 
 				vehicleMesh->SetPhysicsAngularVelocityInDegrees(newAngularMovement, true);
