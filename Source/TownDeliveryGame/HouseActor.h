@@ -33,6 +33,8 @@ public:
 	void SetHouseId(int id);
 	int GetHouseId();
 
+	float GetDeliveryTime();
+
 	void SetIsTarget(bool bTarget);
 	UFUNCTION(BlueprintPure)
 		bool GetIsTarget();
@@ -44,6 +46,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 		int HouseId = -1;
+
+	UPROPERTY(EditAnywhere)
+		float DeliveryTime = -1.0f;
 
 	UPROPERTY()
 		bool IsTarget = false;

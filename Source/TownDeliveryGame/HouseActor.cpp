@@ -30,17 +30,17 @@ void AHouseActor::BeginPlay()
 void AHouseActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	GameModeRef->Tick(DeltaTime);
+	if(GameModeRef) GameModeRef->Tick(DeltaTime);
 }
 
 void AHouseActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& sweepResult)
 {
-	GameModeRef->ParkingSphereOverlap(true, HouseId);
+	if (GameModeRef) GameModeRef->ParkingSphereOverlap(true, HouseId);
 }
 
 void AHouseActor::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	GameModeRef->ParkingSphereOverlap(false, HouseId);
+	if (GameModeRef) GameModeRef->ParkingSphereOverlap(false, HouseId);
 }
 
 void AHouseActor::SetHouseId(int id)
@@ -51,6 +51,11 @@ void AHouseActor::SetHouseId(int id)
 int AHouseActor::GetHouseId()
 {
 	return HouseId;
+}
+
+float AHouseActor::GetDeliveryTime()
+{
+	return DeliveryTime;
 }
 
 void AHouseActor::SetIsTarget(bool bTarget)

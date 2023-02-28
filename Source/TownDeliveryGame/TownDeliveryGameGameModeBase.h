@@ -21,6 +21,15 @@ public:
 	UFUNCTION()
 		void ParkingSphereOverlap(bool bStart, int houseNo);
 	void Tick(float DeltaSeconds);
+
+	UFUNCTION(BlueprintPure)
+		int GetLives();
+	UFUNCTION(BlueprintPure)
+		int GetDeliveriesMade();
+	UFUNCTION(BlueprintPure)
+		int GetTimer();
+	UFUNCTION(BlueprintPure)
+		int GetTaskInfo();
 protected:
 	virtual void BeginPlay() override;
 	//virtual void Tick(float DeltaSeconds) override;
@@ -28,13 +37,18 @@ protected:
 private:
 	void GenerateDestination();
 	void DeliveryFailed();
+	void TaskInfoRemover();
 
 	UPROPERTY()
 		int designatedHouse = -5;
 	UPROPERTY()
 		FTimerHandle DeliveryTimer;
+	UPROPERTY()
+		FTimerHandle TaskInfoTimer;
 	UPROPERTY(EditAnywhere)
 		float baseTimer = 60.0f;
+	UPROPERTY(EditAnywhere)
+		float TaskTimer = 5.0f;
 	UPROPERTY(EditAnywhere)
 		float difficultyChange = 1.25f;
 	UPROPERTY(EditAnywhere)
@@ -43,7 +57,8 @@ private:
 		int Lives = 3;
 	UPROPERTY()
 		int deliveriesMade = 0;
-
+	UPROPERTY()
+		int TaskInfo = 0;
 
 	UPROPERTY()
 		bool ParkingOverlap = false;
@@ -60,4 +75,10 @@ private:
 
 	UPROPERTY(EditAnywhere)
 		FName MainMenuLevel;
+
+private:
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UUserWidget>UIClass;
+	UPROPERTY()
+		UUserWidget* UICount;
 };

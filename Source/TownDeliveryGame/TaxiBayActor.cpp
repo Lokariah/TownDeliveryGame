@@ -45,11 +45,11 @@ bool ATaxiBayActor::GetIsTarget()
 
 void ATaxiBayActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& sweepResult)
 {
-	GameModeRef->ParkingSphereOverlap(true, -1);
+	if (GameModeRef) GameModeRef->ParkingSphereOverlap(true, -1);
 }
 
 void ATaxiBayActor::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	GameModeRef->ParkingSphereOverlap(false, -1);
+	if (GameModeRef) GameModeRef->ParkingSphereOverlap(false, -1);
 }
 

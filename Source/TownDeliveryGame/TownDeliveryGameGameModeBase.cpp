@@ -3,6 +3,7 @@
 
 #include "TownDeliveryGameGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "Blueprint/UserWidget.h"
 
 void ATownDeliveryGameGameModeBase::ParkingSphereOverlap(bool bStart, int houseNo)
 {
@@ -30,6 +31,8 @@ void ATownDeliveryGameGameModeBase::BeginPlay()
 
 	GenerateDestination();
 	playerControllerRef = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	UICount = CreateWidget(GetWorld(), UIClass);
+	if (UICount) UICount->AddToViewport();
 }
 
 void ATownDeliveryGameGameModeBase::Tick(float DeltaSeconds)
@@ -37,6 +40,7 @@ void ATownDeliveryGameGameModeBase::Tick(float DeltaSeconds)
 	//Super::Tick(DeltaSeconds);
 	if (ParkingOverlap) {
 		if (playerControllerRef->PlayerCar->GetVelocity().Length() < ParkingSpeedAllowance) {
+			if (GetWorld()->GetTimerManager().IsTimerActive(TaskInfoTimer)) GetWorld()->GetTimerManager().ClearTimer(TaskInfoTimer);
 			if (designatedHouse != -1) {
 				UE_LOG(LogTemp, Warning, TEXT("Overlap Tick"));
 				GetWorld()->GetTimerManager().ClearTimer(DeliveryTimer);
@@ -44,6 +48,8 @@ void ATownDeliveryGameGameModeBase::Tick(float DeltaSeconds)
 				TaxiBay->SetIsTarget(true);
 				designatedHouse = -1;
 				deliveriesMade++;
+				TaskInfo = 2;
+				GetWorld()->GetTimerManager().SetTimer(TaskInfoTimer, this, &ATownDeliveryGameGameModeBase::TaskInfoRemover, TaskTimer, false);
 			}
 			else GenerateDestination();
 			ParkingOverlap = false;
@@ -51,18 +57,54 @@ void ATownDeliveryGameGameModeBase::Tick(float DeltaSeconds)
 	}
 }
 
+int ATownDeliveryGameGameModeBase::GetLives()
+{
+	return Lives;
+}
+
+int ATownDeliveryGameGameModeBase::GetDeliveriesMade()
+{
+	return deliveriesMade;
+}
+
+int ATownDeliveryGameGameModeBase::GetTimer()
+{
+	if (GetWorld()->GetTimerManager().IsTimerActive(DeliveryTimer))
+		return GetWorld()->GetTimerManager().GetTimerRemaining(DeliveryTimer) + 1;
+	else return -1;
+}
+
+int ATownDeliveryGameGameModeBase::GetTaskInfo()
+{
+	return TaskInfo;
+}
+
 void ATownDeliveryGameGameModeBase::GenerateDestination()
 {
 	designatedHouse = FMath::RandRange(0, Houses.Num() - 1);
 	Houses[designatedHouse]->SetIsTarget(true);
 	TaxiBay->SetIsTarget(false);
-	GetWorld()->GetTimerManager().SetTimer(DeliveryTimer, this, &ATownDeliveryGameGameModeBase::DeliveryFailed, baseTimer - difficultyChange * deliveriesMade, false);
+	float destinationTimer = Houses[designatedHouse]->GetDeliveryTime();
+	TaskInfo = 1;
+	GetWorld()->GetTimerManager().SetTimer(DeliveryTimer, this, &ATownDeliveryGameGameModeBase::DeliveryFailed, destinationTimer - difficultyChange * deliveriesMade, false);
+	GetWorld()->GetTimerManager().SetTimer(TaskInfoTimer, this, &ATownDeliveryGameGameModeBase::TaskInfoRemover, TaskTimer, false);
 }
 
 void ATownDeliveryGameGameModeBase::DeliveryFailed()
 {
+	if (GetWorld()->GetTimerManager().IsTimerActive(TaskInfoTimer)) GetWorld()->GetTimerManager().ClearTimer(TaskInfoTimer);
 	Houses[designatedHouse]->SetIsTarget(false);
+	TaxiBay->SetIsTarget(true);
 	designatedHouse = -1;
 	Lives--;
 	if (Lives <= 0) UGameplayStatics::OpenLevel(GetWorld(), MainMenuLevel);
+	else {
+		TaskInfo = 2;
+		GetWorld()->GetTimerManager().SetTimer(TaskInfoTimer, this, &ATownDeliveryGameGameModeBase::TaskInfoRemover, TaskTimer, false);
+	}
+}
+
+void ATownDeliveryGameGameModeBase::TaskInfoRemover()
+{
+	TaskInfo = 0;
 }
