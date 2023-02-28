@@ -37,7 +37,6 @@ void ATownDeliveryGameGameModeBase::BeginPlay()
 
 void ATownDeliveryGameGameModeBase::Tick(float DeltaSeconds)
 {
-	//Super::Tick(DeltaSeconds);
 	if (ParkingOverlap) {
 		if (playerControllerRef->PlayerCar->GetVelocity().Length() < ParkingSpeedAllowance) {
 			if (GetWorld()->GetTimerManager().IsTimerActive(TaskInfoTimer)) GetWorld()->GetTimerManager().ClearTimer(TaskInfoTimer);
@@ -79,6 +78,11 @@ int ATownDeliveryGameGameModeBase::GetTaskInfo()
 	return TaskInfo;
 }
 
+bool ATownDeliveryGameGameModeBase::GetEndGame()
+{
+	return bEndgame;
+}
+
 void ATownDeliveryGameGameModeBase::GenerateDestination()
 {
 	designatedHouse = FMath::RandRange(0, Houses.Num() - 1);
@@ -97,7 +101,10 @@ void ATownDeliveryGameGameModeBase::DeliveryFailed()
 	TaxiBay->SetIsTarget(true);
 	designatedHouse = -1;
 	Lives--;
-	if (Lives <= 0) UGameplayStatics::OpenLevel(GetWorld(), MainMenuLevel);
+	if (Lives <= 0) {
+		bEndgame = true;
+		GetWorld()->GetTimerManager().SetTimer(EndgameTimer, this, &ATownDeliveryGameGameModeBase::EndGame, EndgameTime, false);
+	}
 	else {
 		TaskInfo = 2;
 		GetWorld()->GetTimerManager().SetTimer(TaskInfoTimer, this, &ATownDeliveryGameGameModeBase::TaskInfoRemover, TaskTimer, false);
@@ -107,4 +114,9 @@ void ATownDeliveryGameGameModeBase::DeliveryFailed()
 void ATownDeliveryGameGameModeBase::TaskInfoRemover()
 {
 	TaskInfo = 0;
+}
+
+void ATownDeliveryGameGameModeBase::EndGame()
+{
+	UGameplayStatics::OpenLevel(GetWorld(), MainMenuLevel);
 }

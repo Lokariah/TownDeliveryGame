@@ -30,6 +30,9 @@ public:
 		int GetTimer();
 	UFUNCTION(BlueprintPure)
 		int GetTaskInfo();
+
+	UFUNCTION(BlueprintCallable)
+		bool GetEndGame();
 protected:
 	virtual void BeginPlay() override;
 	//virtual void Tick(float DeltaSeconds) override;
@@ -38,6 +41,7 @@ private:
 	void GenerateDestination();
 	void DeliveryFailed();
 	void TaskInfoRemover();
+	void EndGame();
 
 	UPROPERTY()
 		int designatedHouse = -5;
@@ -45,10 +49,14 @@ private:
 		FTimerHandle DeliveryTimer;
 	UPROPERTY()
 		FTimerHandle TaskInfoTimer;
+	UPROPERTY()
+		FTimerHandle EndgameTimer; 
 	UPROPERTY(EditAnywhere)
 		float baseTimer = 60.0f;
 	UPROPERTY(EditAnywhere)
 		float TaskTimer = 5.0f;
+	UPROPERTY(EditAnywhere)
+		float EndgameTime = 5.0f;
 	UPROPERTY(EditAnywhere)
 		float difficultyChange = 1.25f;
 	UPROPERTY(EditAnywhere)
@@ -63,6 +71,8 @@ private:
 	UPROPERTY()
 		bool ParkingOverlap = false;
 
+	UPROPERTY()
+		bool bEndgame = false;
 
 	UPROPERTY()
 		AMainPlayerController* playerControllerRef;
