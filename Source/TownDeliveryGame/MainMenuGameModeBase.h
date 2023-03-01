@@ -23,4 +23,8 @@ private:
 		TSubclassOf<UUserWidget>MainMenuClass;
 	UPROPERTY()
 		UUserWidget* MainMenuCount;
+	UPROPERTY(EditAnywhere)
+		USoundBase* themeMusic;
+	UPROPERTY(EditAnywhere)
+		float themeVolume = 0.5f;
 };

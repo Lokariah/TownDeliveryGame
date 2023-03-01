@@ -8,6 +8,7 @@
 void ATownDeliveryGameGameModeBase::ParkingSphereOverlap(bool bStart, int houseNo)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Overlap"));
+	//Determines if current bay is the desired bay 
 	if (bStart && houseNo == designatedHouse) 
 		ParkingOverlap = true;
 	else if (!bStart && houseNo == designatedHouse) 
@@ -17,7 +18,6 @@ void ATownDeliveryGameGameModeBase::ParkingSphereOverlap(bool bStart, int houseN
 void ATownDeliveryGameGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
-	//PrimaryActorTick.bCanEverTick = true;
 	int currentHouse = 0;
 	UPROPERTY() TArray<AActor*> temp;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHouseActor::StaticClass(), temp);
@@ -33,6 +33,7 @@ void ATownDeliveryGameGameModeBase::BeginPlay()
 	playerControllerRef = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	UICount = CreateWidget(GetWorld(), UIClass);
 	if (UICount) UICount->AddToViewport();
+	UGameplayStatics::PlaySound2D(GetWorld(), themeMusic, themeVolume, 1.0f, 0.0f);
 }
 
 void ATownDeliveryGameGameModeBase::Tick(float DeltaSeconds)

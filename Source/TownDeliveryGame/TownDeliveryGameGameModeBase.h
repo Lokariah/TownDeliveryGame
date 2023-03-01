@@ -86,9 +86,12 @@ private:
 	UPROPERTY(EditAnywhere)
 		FName MainMenuLevel;
 
-private:
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<UUserWidget>UIClass;
 	UPROPERTY()
 		UUserWidget* UICount;
+	UPROPERTY(EditAnywhere)
+		USoundBase* themeMusic;
+	UPROPERTY(EditAnywhere)
+		float themeVolume = 0.5f;
 };

@@ -24,7 +24,10 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		ACarChaosVehiclePawn* PlayerCar;
-
+	UPROPERTY(EditAnywhere) 
+		USoundBase* honkSound;
+	UPROPERTY(EditAnywhere)
+		float honkVolume = 0.5f;
 private:
 
 	void Throttle(float Value);

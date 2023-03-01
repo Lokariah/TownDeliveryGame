@@ -3,6 +3,7 @@
 
 #include "MainPlayerController.h"
 #include "Components/InputComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "ChaosWheeledVehicleMovementComponent.h"
 
 void AMainPlayerController::BeginPlay()
@@ -80,6 +81,7 @@ void AMainPlayerController::OnHandbrakeReleased()
 
 void AMainPlayerController::Interact()
 {
+	UGameplayStatics::PlaySound2D(GetWorld(), honkSound, honkVolume, 1.0f, 0.0f);
 }
 
 void AMainPlayerController::UpdateInAirControl(float DeltaTime)
