@@ -17,16 +17,6 @@ void AMainPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	UpdateInAirControl(DeltaTime);
-
-	/*if (PlayerCar) {
-		if (bThrottleReceived) {
-			bThrottleReceived = false;
-		}
-		else {
-			CarMomentum -= DeltaTime * PlayerCar->Mass;
-		}
-		PlayerCar->SetActorLocation(PlayerCar->GetActorLocation() + PlayerCar->GetActorForwardVector() * DeltaTime);
-	}*/
 }
 
 void AMainPlayerController::SetupInputComponent()
@@ -91,10 +81,11 @@ void AMainPlayerController::UpdateInAirControl(float DeltaTime)
 		queryParams.AddIgnoredActor(PlayerCar);
 		const FVector traceStart = PlayerCar->GetActorLocation() + FVector(0.0f, 0.0f, 50.0f);
 		const FVector traceEnd = PlayerCar->GetActorLocation() - FVector(0.0f, 0.0f, 200.0f);
-
 		FHitResult Hit;
 
+		//Checks to see if no objects is within 200 distance of cars underchasis
 		const bool bInAir = !PlayerCar->GetWorld()->LineTraceSingleByChannel(Hit, traceStart, traceEnd, ECC_Visibility, queryParams);
+		//Checks to see if car roof is pointed skywards
 		const bool bNotGrounded = FVector::DotProduct(PlayerCar->GetActorUpVector(), FVector::UpVector) < 0.1f;
 
 		if (bInAir || bNotGrounded) {

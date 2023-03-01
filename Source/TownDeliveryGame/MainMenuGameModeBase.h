@@ -19,10 +19,13 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	//Menu UI related
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<UUserWidget>MainMenuClass;
 	UPROPERTY()
 		UUserWidget* MainMenuCount;
+
+	//Background Music Related
 	UPROPERTY(EditAnywhere)
 		USoundBase* themeMusic;
 	UPROPERTY(EditAnywhere)

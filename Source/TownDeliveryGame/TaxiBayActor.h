@@ -25,13 +25,14 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	//Waypoint functionality
 	void SetIsTarget(bool bTarget);
 	UFUNCTION(BlueprintPure)
 		bool GetIsTarget();
 
+	//Used to check if car is stationary outside pick up
 	UFUNCTION()
 		void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& sweepResult);
-
 	UFUNCTION()
 		void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
@@ -41,6 +42,7 @@ private:
 	UPROPERTY(EditAnywhere)
 		UBoxComponent* ParkingCollisionBox;
 
+	//Waypoint visibility tracking
 	UPROPERTY()
 		bool IsTarget = false;
 

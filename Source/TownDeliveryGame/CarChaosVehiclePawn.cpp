@@ -8,7 +8,7 @@ ACarChaosVehiclePawn::ACarChaosVehiclePawn()
 	PrimaryActorTick.bCanEverTick = false;
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
-
+	//VehicleMovementComponentConfig - Precise tuning made in blueprint
 	UChaosWheeledVehicleMovementComponent* vehicleComponent = CastChecked<UChaosWheeledVehicleMovementComponent>(GetVehicleMovementComponent());
 	SetRootComponent(GetMesh());
 	vehicleComponent->EngineSetup.MaxRPM = 5700.0f;

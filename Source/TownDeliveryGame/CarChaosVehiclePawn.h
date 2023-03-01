@@ -31,6 +31,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		USpringArmComponent* CameraSpringArm;
 
+	//Remnants from original implementation pre ChaosVehicleMovementComponent. Unused
 	UPROPERTY(EditAnywhere)
 		float Acceleration = 10.0f;
 	UPROPERTY(EditAnywhere)

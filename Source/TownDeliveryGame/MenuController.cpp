@@ -7,6 +7,7 @@ void AMenuController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//Disabled controls and allows menu interaction
 	bShowMouseCursor = true;
 	bEnableClickEvents = true;
 	bEnableMouseOverEvents = true;
